@@ -23,7 +23,7 @@ def save_to_file():
 
 def show_notification(message, duration):
     notification_label.config(text=message)
-    notification_label.place(relx=0.5, rely=0.05, anchor='n')
+    notification_label.place(relx=0.5, rely=0.4, anchor='n')
     root.after(duration, hide_notification)
 
 def hide_notification():
@@ -69,12 +69,13 @@ style.theme_use("clam")
 button_font = ("黑体", 10)
 button_color = "white"  
 button_font_color = "black"
-style.configure('TButton', font=button_font, foreground=button_font_color, background=button_color, borderwidth=0, relief='flat')
+style.configure('TButton', font=button_font, foreground=button_font_color, background=button_color, borderwidth=1, relief='groove')
+style.configure("TScale", background="grey", troughcolor="white", sliderlength=10, sliderthickness=5, sliderrelief="groove", sliderround=True)
 
 pin_var = tk.BooleanVar()
 pin_var.set(True)  # 窗口默认置顶
 
-frame_label = tk.Frame(root, bg='grey')
+frame_label = tk.Frame(root, bg='grey',height=10)
 frame_label.pack(side=tk.TOP, fill=tk.X)
 
 def start_move(event):
@@ -92,11 +93,19 @@ def do_move(event):
     y = root.winfo_y() + dy
     root.geometry(f"+{x}+{y}")
 
-title_label = tk.Label(frame_label, text="Notebook", bg='grey', fg='white')
-title_label.pack(side=tk.LEFT)
+def update_transparency(val):
+    root.attributes('-alpha', float(val))
 
-text_entry = tk.Text(root, height=10, width=40)
-text_entry.pack()
+
+title_label = tk.Label(frame_label, text="Notebook", bg='grey', fg='white',font=("黑体", 10, "bold"))
+title_label.pack(side=tk.LEFT, padx=5)
+
+transparency_scale = ttk.Scale(frame_label, from_=0.3, to=1, orient=tk.HORIZONTAL, command=update_transparency, style="TScale")
+transparency_scale.set(1)  # 默认透明度为100%
+transparency_scale.pack(side=tk.RIGHT, padx=10)
+
+text_entry = tk.Text(root, height=12, width=45,font=("黑体", 10), highlightbackground="grey", highlightcolor="grey", highlightthickness=1)
+text_entry.pack(padx=5,pady=5)
 
 frame_buttons = tk.Frame(root)
 frame_buttons.pack(side=tk.BOTTOM, padx=5, pady=5)
@@ -110,7 +119,8 @@ pin_button.pack(side=tk.LEFT, padx=5)
 save_button = ttk.Button(frame_buttons, text="保存", command=save_to_file)
 save_button.pack(side=tk.LEFT, padx=5)
 
-for widget in [root]:
+
+for widget in [frame_label, title_label]:
     widget.bind("<ButtonPress-1>", start_move)
     widget.bind("<ButtonRelease-1>", stop_move)
     widget.bind("<B1-Motion>", do_move)
