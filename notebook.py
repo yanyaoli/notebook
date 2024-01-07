@@ -3,13 +3,13 @@ from tkinter import ttk
 from datetime import datetime
 import os
 
+
 def save_to_file():
     content = text_entry.get("1.0", "end-1c")
     if content.strip() == "":
         show_notification("请输入内容！", duration=1000)
         return
-
-    current_datetime = datetime.now().strftime("%Y年%m月%d日%H点%M分%S秒")
+    current_datetime = datetime.now().strftime("%Y{y}%m{m}%d{d}%H{H}%M{M}%S{S}").format(y="年",m="月",d="日",H="时",M="分",S="秒")
     file_name = f"{current_datetime}.txt"
     file_path = os.path.join("notes", file_name)
 
@@ -127,18 +127,14 @@ for widget in [frame_label, title_label]:
     
 notification_label = tk.Label(root, text="", fg="black", bg="white")
 
-# 获取屏幕的宽度和高度
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
-# 计算窗口应该出现的位置
-x = screen_width - root.winfo_reqwidth() - 120
+x = screen_width - root.winfo_reqwidth() - 140
 y = 10
 
-# 设置窗口的位置
 root.geometry("+%d+%d" % (x, y))
 
-# 窗口置顶
 root.attributes('-topmost', True)
 
 root.mainloop()
